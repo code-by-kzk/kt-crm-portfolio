@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [customers, setCustomers] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/customers")
+    fetch(`${API_URL}/api/customers`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("顧客情報の取得に失敗しました");
