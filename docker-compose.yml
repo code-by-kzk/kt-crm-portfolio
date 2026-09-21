@@ -17,8 +17,8 @@ services:
       - "8080:8080"
     volumes:
       - ./backend:/app
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - ./backend/.env
 
   db:
     image: postgres:17
