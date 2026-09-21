@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Customer struct {
@@ -23,7 +23,7 @@ func main() {
 
 	databaseURL := os.Getenv("DATABASE_URL")
 
-	conn, err := pgx.Connect(
+	pool, err := pgxpool.New(
 		context.Background(),
 		databaseURL,
 	)
@@ -32,9 +32,9 @@ func main() {
 		panic(err)
 	}
 
-	defer conn.Close(context.Background())
+	defer pool.Close()
 
-	if err := conn.Ping(context.Background()); err != nil {
+	if err := pool.Ping(context.Background()); err != nil {
 		panic(err)
 	}
 
@@ -57,7 +57,7 @@ func main() {
 
 	// 顧客一覧
 	r.GET("/api/customers", func(c *gin.Context) {
-		rows, err := conn.Query(
+		rows, err := pool.Query(
 			context.Background(),
 			`SELECT id, name, email, company, created_at
 			 FROM customers
